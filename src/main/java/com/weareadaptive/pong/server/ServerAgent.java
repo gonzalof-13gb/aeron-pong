@@ -9,7 +9,7 @@ import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
-import src.main.resources.AeronMessageEncoder;
+import src.main.resources.InputCommandEncoder;
 import src.main.resources.MessageHeaderEncoder;
 
 import java.nio.ByteBuffer;
@@ -24,7 +24,7 @@ public class ServerAgent implements Agent
     private final UnsafeBuffer outBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(256));
 
     private static final int HEADER_LENGTH = new MessageHeaderEncoder().encodedLength();
-    private final AeronMessageEncoder messageEncoder = new AeronMessageEncoder();
+    private final InputCommandEncoder messageEncoder = new InputCommandEncoder();
     private AgentState agentState = AgentState.INITIAL;
 
     @Override
@@ -82,7 +82,7 @@ public class ServerAgent implements Agent
 
         outBuffer.putBytes(0, buffer, offset, length);
         messageEncoder.wrap(outBuffer, HEADER_LENGTH);
-        messageEncoder.serverTimestamp(System.nanoTime());
+        //messageEncoder.serverTimestamp(System.nanoTime());
 
         final long offerResult = publication.offer(outBuffer, 0, length);
         if (offerResult < 0)

@@ -8,7 +8,7 @@ import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
-import src.main.resources.AeronMessageEncoder;
+import src.main.resources.InputCommandEncoder;
 import src.main.resources.MessageHeaderEncoder;
 
 import java.nio.ByteBuffer;
@@ -22,7 +22,7 @@ public class PublishingAgent implements Agent
     private Publication publication;
 
     private static final int HEADER_LENGTH = new MessageHeaderEncoder().encodedLength();
-    private final AeronMessageEncoder messageEncoder = new AeronMessageEncoder();
+    private final InputCommandEncoder inputEncoder = new InputCommandEncoder();
     private AgentState agentState = AgentState.INITIAL;
 
     private final OneToOneRingBuffer ringBuffer;
@@ -77,8 +77,8 @@ public class PublishingAgent implements Agent
 
     private void readAndOfferMessage(final int msgTypeId, final MutableDirectBuffer buffer, final int index, final int length)
     {
-        messageEncoder.wrap(buffer, index + HEADER_LENGTH);
-        messageEncoder.netTimestamp(System.nanoTime());
+        inputEncoder.wrap(buffer, index + HEADER_LENGTH);
+
         final long offer = publication.offer(buffer, index, length);
         if (offer < 0)
         {

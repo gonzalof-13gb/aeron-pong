@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 
 public class ChatClient
 {
+    private static short PLAYER_ID = 1;
+
     public static void main(final String[] args)
     {
         final IdleStrategy idleStrategy = new BackoffIdleStrategy();
@@ -23,8 +25,8 @@ public class ChatClient
                 = new OneToOneRingBuffer(internalBuffer);
 
         System.out.println("Setup agent.CliAgent");
-        final CliAgent cliAgent = new CliAgent(ringBuffer);
-        final AgentRunner cliAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, cliAgent);
+        final InputAgent inputAgent = new InputAgent(ringBuffer, PLAYER_ID);
+        final AgentRunner cliAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, inputAgent);
 
         System.out.println("Setup agent.PublishingAgent");
         final PublishingAgent publishingAgent = new PublishingAgent(ringBuffer);

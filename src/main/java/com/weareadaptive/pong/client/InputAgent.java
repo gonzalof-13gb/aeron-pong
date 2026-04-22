@@ -4,26 +4,30 @@ import com.weareadaptive.pong.agent.AgentState;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
-import src.main.resources.AeronMessageEncoder;
+import src.main.resources.InputCommandEncoder;
+import src.main.resources.InputType;
 import src.main.resources.MessageHeaderEncoder;
 
+import java.awt.event.KeyEvent;
 import java.nio.ByteBuffer;
-import java.util.Scanner;
 
-public class CliAgent implements Agent
+public class InputAgent implements Agent
 {
     private final OneToOneRingBuffer ringBuffer;
-    private final Scanner scanner;
+
     private final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
-    private final AeronMessageEncoder messageEncoder = new AeronMessageEncoder();
+    private final InputCommandEncoder inputEncoder = new InputCommandEncoder();
+
+    private final Keyboard keyboard = new Keyboard();
+    private final short playerId;
 
     private UnsafeBuffer unsafeBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(4096));
     private AgentState agentState = AgentState.INITIAL;
 
-    public CliAgent(final OneToOneRingBuffer ringBuffer)
+    public InputAgent(final OneToOneRingBuffer ringBuffer, final short playerId)
     {
         this.ringBuffer = ringBuffer;
-        this.scanner = new Scanner(System.in);
+        this.playerId = playerId;
     }
 
     @Override
@@ -35,22 +39,23 @@ public class CliAgent implements Agent
         {
             case INITIAL ->
             {
-                System.out.println("|Cli Agent| Enter your message: ");
-                final String message = scanner.nextLine();
-                sendMessage(message);
+                if (keyboard.isKeyPressed(KeyEvent.VK_UP))
+                {
+                    System.out.println("Up Pressed");
+                }
             }
         }
 
         return workCount;
     }
 
-    private void sendMessage(final String message)
+    private void sendMessage(final InputType inputType)
     {
-        messageEncoder.wrapAndApplyHeader(unsafeBuffer, 0, headerEncoder);
-        messageEncoder.message(message);
-        messageEncoder.inputTimestamp(System.nanoTime());
+        inputEncoder.wrapAndApplyHeader(unsafeBuffer, 0, headerEncoder);
+        inputEncoder.playerId(playerId);
+        inputEncoder.inputType(inputType);
 
-        final int length = headerEncoder.encodedLength() + messageEncoder.encodedLength();
+        final int length = headerEncoder.encodedLength() + inputEncoder.encodedLength();
         ringBuffer.write(1, unsafeBuffer, 0, length);
     }
 

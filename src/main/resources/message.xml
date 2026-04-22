@@ -14,18 +14,14 @@
             <type name="version"     primitiveType="uint16"/>
         </composite>
 
-        <type name="Timestamp" primitiveType="int64"/>
-
-        <composite name="varStringEncoding">
-            <type name="length"  primitiveType="uint32" maxValue="1073741824"/>
-            <type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
-        </composite>
+        <enum name="InputType" encodingType="uint16">
+            <validValue name="UP">0</validValue>
+            <validValue name="DOWN">1</validValue>
+        </enum>
     </types>
 
-    <sbe:message name="AeronMessage" id="1">
-        <field name="netTimestamp" id="1" type="Timestamp"/>
-        <field name="inputTimestamp" id="2" type="Timestamp"/>
-        <field name="serverTimestamp" id="3" type="Timestamp"/>
-        <data  name="message"   id="4" type="varStringEncoding"/>
+    <sbe:message name="InputCommand" id="1">
+        <field name="playerId" id="1" type="int16"/>
+        <field name="inputType" id="2" type="InputType"/>
     </sbe:message>
 </sbe:messageSchema>
