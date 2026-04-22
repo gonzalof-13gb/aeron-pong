@@ -5,7 +5,7 @@ import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
 import org.agrona.concurrent.SleepingIdleStrategy;
 
-public class ChatServer
+public class PongServer
 {
     public static void main(final String[] args)
     {

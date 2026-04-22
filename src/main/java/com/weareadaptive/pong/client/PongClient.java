@@ -10,7 +10,7 @@ import org.agrona.concurrent.ringbuffer.RingBufferDescriptor;
 
 import java.nio.ByteBuffer;
 
-public class ChatClient
+public class PongClient
 {
     private static short PLAYER_ID = 1;
 
