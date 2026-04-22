@@ -1,7 +1,6 @@
 package com.weareadaptive.pong.server;
 
-import agent.AgentErrorHandler;
-import agent.ServerAgent;
+import com.weareadaptive.pong.agent.AgentErrorHandler;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
 import org.agrona.concurrent.SleepingIdleStrategy;

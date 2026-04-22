@@ -33,7 +33,7 @@ tasks.withType<JavaExec> {
 
 val sbeOutputDir = layout.buildDirectory.dir("generated/sbe")
 
-tasks.register<JavaExec>("generateSbe") {
+tasks.register<JavaExec>("generateCodecs") {
     group = "codegen"
     description = "Generate SBE codecs from XML schemas"
 

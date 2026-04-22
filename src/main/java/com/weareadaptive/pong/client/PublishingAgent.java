@@ -1,5 +1,6 @@
 package com.weareadaptive.pong.client;
 
+import com.weareadaptive.pong.agent.AgentState;
 import io.aeron.Aeron;
 import io.aeron.Publication;
 import org.agrona.CloseHelper;
@@ -7,12 +8,12 @@ import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
-import task3.src.main.resources.AeronMessageEncoder;
-import task3.src.main.resources.MessageHeaderEncoder;
+import src.main.resources.AeronMessageEncoder;
+import src.main.resources.MessageHeaderEncoder;
 
 import java.nio.ByteBuffer;
 
-import static common.Globals.*;
+import static com.weareadaptive.pong.Globals.*;
 
 public class PublishingAgent implements Agent
 {

@@ -1,9 +1,6 @@
 package com.weareadaptive.pong.client;
 
-import agent.AgentErrorHandler;
-import agent.CliAgent;
-import agent.PublishingAgent;
-import agent.SubscriptionAgent;
+import com.weareadaptive.pong.agent.AgentErrorHandler;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.BackoffIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;
@@ -42,4 +39,6 @@ public class ChatClient
         AgentRunner.startOnThread(publishingAgentRunner);
         AgentRunner.startOnThread(subscriptionAgentRunner);
     }
+
+
 }

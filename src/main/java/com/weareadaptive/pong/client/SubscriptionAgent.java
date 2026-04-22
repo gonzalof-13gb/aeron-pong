@@ -1,15 +1,16 @@
 package com.weareadaptive.pong.client;
 
+import com.weareadaptive.pong.agent.AgentState;
 import io.aeron.Aeron;
 import io.aeron.Subscription;
 import io.aeron.logbuffer.Header;
 import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
-import task3.src.main.resources.AeronMessageDecoder;
-import task3.src.main.resources.MessageHeaderDecoder;
+import src.main.resources.AeronMessageDecoder;
+import src.main.resources.MessageHeaderDecoder;
 
-import static common.Globals.*;
+import static com.weareadaptive.pong.Globals.*;
 
 public class SubscriptionAgent implements Agent
 {
