@@ -49,6 +49,11 @@ public class DrawingAgent implements Agent
         final int player2w = gameStateDecoder.player2size().x();
         final int player2h = gameStateDecoder.player2size().y();
         gameWindow.drawPlayer((short)2, player2x, player2y, player2w, player2h);
+
+        final int ballX = gameStateDecoder.ballPosition().x();
+        final int ballY = gameStateDecoder.ballPosition().y();
+        final int ballRadius = gameStateDecoder.ballRadius();
+        gameWindow.drawBall(ballX, ballY, ballRadius);
     }
 
     @Override
