@@ -40,7 +40,7 @@ public class DrawingAgent implements Agent
 
         final int player1x = gameStateDecoder.player1position().x();
         final int player1y = gameStateDecoder.player1position().y();
-        final int player1w = gameStateDecoder.player1size().y();
+        final int player1w = gameStateDecoder.player1size().x();
         final int player1h = gameStateDecoder.player1size().y();
         gameWindow.drawPlayer((short)1, player1x, player1y, player1w, player1h);
 

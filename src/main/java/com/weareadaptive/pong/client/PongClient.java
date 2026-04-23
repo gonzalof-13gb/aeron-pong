@@ -12,10 +12,14 @@ import java.nio.ByteBuffer;
 
 public class PongClient
 {
-    private static short PLAYER_ID = 1;
-
     public static void main(final String[] args)
     {
+        if (args.length != 1)
+        {
+            System.err.println("[Pong Client] Missing player id input argument in main() method");
+        }
+        final short playerId = (short) Integer.parseInt(args[0]);
+
         final IdleStrategy idleStrategy = new BackoffIdleStrategy();
 
         final int bufferLength = 4096 + RingBufferDescriptor.TRAILER_LENGTH;
@@ -26,7 +30,7 @@ public class PongClient
         final GameWindow gameWindow = new GameWindow(keyboard);
 
         System.out.println("Setup InputAgent");
-        final InputAgent inputAgent = new InputAgent(innerRingBuffer, PLAYER_ID, keyboard);
+        final InputAgent inputAgent = new InputAgent(innerRingBuffer, playerId, keyboard);
         final AgentRunner inputAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, inputAgent);
 
         System.out.println("Setup DrawingAgent");
