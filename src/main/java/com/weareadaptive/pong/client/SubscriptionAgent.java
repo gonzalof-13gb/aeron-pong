@@ -7,8 +7,8 @@ import io.aeron.logbuffer.Header;
 import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
+import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
 import src.main.resources.InputCommandDecoder;
-import src.main.resources.InputCommandEncoder;
 import src.main.resources.MessageHeaderDecoder;
 
 import static com.weareadaptive.pong.Globals.*;
@@ -21,6 +21,13 @@ public class SubscriptionAgent implements Agent
     private final MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
     private final InputCommandDecoder inputDecoder = new InputCommandDecoder();
     private AgentState agentState = AgentState.INITIAL;
+
+    private final OneToOneRingBuffer outerRingBuffer;
+
+    public SubscriptionAgent(final OneToOneRingBuffer outerRingBuffer)
+    {
+        this.outerRingBuffer = outerRingBuffer;
+    }
 
     @Override
     public void onStart()

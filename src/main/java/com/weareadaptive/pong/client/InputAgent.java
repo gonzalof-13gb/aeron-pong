@@ -18,16 +18,24 @@ public class InputAgent implements Agent
     private final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
     private final InputCommandEncoder inputEncoder = new InputCommandEncoder();
 
-    private final Keyboard keyboard = new Keyboard();
+    private final Keyboard keyboard;
     private final short playerId;
 
     private UnsafeBuffer unsafeBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(4096));
     private AgentState agentState = AgentState.INITIAL;
 
-    public InputAgent(final OneToOneRingBuffer ringBuffer, final short playerId)
+    // TODO: Delete, debugging purposes
+    private GameWindow gameWindow;
+
+    public InputAgent(final OneToOneRingBuffer ringBuffer,
+                      final short playerId,
+                      final Keyboard keyboard,
+                      final GameWindow gameWindow)
     {
         this.ringBuffer = ringBuffer;
         this.playerId = playerId;
+        this.keyboard = keyboard;
+        this.gameWindow = gameWindow;
     }
 
     @Override
@@ -35,15 +43,25 @@ public class InputAgent implements Agent
     {
         int workCount = 0;
 
-        switch (agentState)
+        if (keyboard.isKeyPressed(KeyEvent.VK_UP))
         {
-            case INITIAL ->
-            {
-                if (keyboard.isKeyPressed(KeyEvent.VK_UP))
-                {
-                    System.out.println("Up Pressed");
-                }
-            }
+            gameWindow.drawText("UP");
+        }
+        else if (keyboard.isKeyPressed(KeyEvent.VK_DOWN))
+        {
+            gameWindow.drawText("DOWN");
+        }
+        else if (keyboard.isKeyPressed(KeyEvent.VK_LEFT))
+        {
+            gameWindow.drawText("LEFT");
+        }
+        else if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT))
+        {
+            gameWindow.drawText("RIGHT");
+        }
+        else
+        {
+            gameWindow.drawText("");
         }
 
         return workCount;
