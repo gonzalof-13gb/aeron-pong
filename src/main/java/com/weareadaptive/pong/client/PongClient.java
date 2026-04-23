@@ -1,6 +1,6 @@
 package com.weareadaptive.pong.client;
 
-import com.weareadaptive.pong.agent.AgentErrorHandler;
+import com.weareadaptive.pong.utils.AgentErrorHandler;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.BackoffIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;
@@ -8,7 +8,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
 import org.agrona.concurrent.ringbuffer.RingBufferDescriptor;
 
-import javax.swing.*;
 import java.nio.ByteBuffer;
 
 public class PongClient

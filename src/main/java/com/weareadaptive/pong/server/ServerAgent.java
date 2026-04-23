@@ -1,6 +1,8 @@
 package com.weareadaptive.pong.server;
 
-import com.weareadaptive.pong.agent.AgentState;
+import com.weareadaptive.pong.server.state.Bar;
+import com.weareadaptive.pong.server.state.GameState;
+import com.weareadaptive.pong.utils.AgentState;
 import io.aeron.Aeron;
 import io.aeron.Publication;
 import io.aeron.Subscription;
@@ -10,9 +12,8 @@ import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
 import src.main.resources.InputCommandDecoder;
-import src.main.resources.InputCommandEncoder;
+import src.main.resources.InputType;
 import src.main.resources.MessageHeaderDecoder;
-import src.main.resources.MessageHeaderEncoder;
 
 import java.nio.ByteBuffer;
 
@@ -28,6 +29,13 @@ public class ServerAgent implements Agent
     private final MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
     private final InputCommandDecoder inputDecoder = new InputCommandDecoder();
     private AgentState agentState = AgentState.INITIAL;
+
+    private final GameState gameState;
+
+    public ServerAgent(final GameState gameState)
+    {
+        this.gameState = gameState;
+    }
 
     @Override
     public void onStart()
@@ -94,6 +102,15 @@ public class ServerAgent implements Agent
         }
 
         // TODO: Apply this input to game state
+        final short playerId = inputDecoder.playerId();
+        final InputType inputType = inputDecoder.inputType();
+        final Bar playerToMove = gameState.getPlayerById(playerId);
+        if (playerToMove == null)
+        {
+            System.err.println("[Server Agent] Player id: " + playerId + " does not exist");
+            return;
+        }
+        playerToMove.move(inputType);
     }
 
     private void sendGameState()

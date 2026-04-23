@@ -1,4 +1,4 @@
-package com.weareadaptive.pong.agent;
+package com.weareadaptive.pong.utils;
 
 import org.agrona.ErrorHandler;
 

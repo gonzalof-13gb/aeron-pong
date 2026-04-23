@@ -1,6 +1,6 @@
 package com.weareadaptive.pong.client;
 
-import com.weareadaptive.pong.agent.AgentState;
+import com.weareadaptive.pong.utils.AgentState;
 import io.aeron.Aeron;
 import io.aeron.Publication;
 import org.agrona.CloseHelper;

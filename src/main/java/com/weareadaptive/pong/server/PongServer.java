@@ -1,6 +1,9 @@
 package com.weareadaptive.pong.server;
 
-import com.weareadaptive.pong.agent.AgentErrorHandler;
+import com.weareadaptive.pong.server.state.Ball;
+import com.weareadaptive.pong.server.state.Bar;
+import com.weareadaptive.pong.server.state.GameState;
+import com.weareadaptive.pong.utils.AgentErrorHandler;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
 import org.agrona.concurrent.SleepingIdleStrategy;
@@ -11,7 +14,12 @@ public class PongServer
     {
         final IdleStrategy idleStrategy = new SleepingIdleStrategy();
 
-        final ServerAgent serverAgent = new ServerAgent();
+        final Bar player1 = new Bar();
+        final Bar player2 = new Bar();
+        final Ball ball = new Ball();
+        final GameState gameState = new GameState(player1, player2, ball);
+
+        final ServerAgent serverAgent = new ServerAgent(gameState);
         final AgentRunner serverAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, serverAgent);
 
         AgentRunner.startOnThread(serverAgentRunner);
