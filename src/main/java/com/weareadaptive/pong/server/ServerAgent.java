@@ -117,11 +117,18 @@ public class ServerAgent implements Agent
     {
         gameStateEncoder.wrapAndApplyHeader(outBuffer, 0, headerEncoder);
         gameStateEncoder.player1position()
-                .x(gameState.player1().position().x())
-                .y(gameState.player1().position().y());
+                .x(gameState.player1().x())
+                .y(gameState.player1().y());
+        gameStateEncoder.player1size()
+                .x(gameState.player1().width())
+                .y(gameState.player1().height());
+
         gameStateEncoder.player2position()
-                .x(gameState.player2().position().x())
-                .y(gameState.player2().position().y());
+                .x(gameState.player2().x())
+                .y(gameState.player2().y());
+        gameStateEncoder.player2size()
+                .x(gameState.player2().width())
+                .y(gameState.player2().height());
 
         // TODO: Ball, scores, etc...
         final int length = headerEncoder.encodedLength() + gameStateEncoder.encodedLength();

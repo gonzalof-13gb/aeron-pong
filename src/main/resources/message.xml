@@ -32,6 +32,8 @@
 
     <sbe:message name="GameState" id="2">
         <field name="player1position" id="1" type="vector2"/>
-        <field name="player2position" id="2" type="vector2"/>
+        <field name="player1size"     id="2" type="vector2"/>
+        <field name="player2position" id="3" type="vector2"/>
+        <field name="player2size"     id="4" type="vector2"/>
     </sbe:message>
 </sbe:messageSchema>

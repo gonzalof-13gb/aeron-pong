@@ -26,6 +26,11 @@ public class GameWindow
         panel.drawText(text);
     }
 
+    public void drawPlayer(final short playerId, final int x, final int y, final int width, final int height)
+    {
+        panel.drawPlayer(playerId, x, y, width, height);
+    }
+
     public void repaint()
     {
         panel.repaint();

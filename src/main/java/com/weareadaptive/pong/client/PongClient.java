@@ -18,7 +18,7 @@ public class PongClient
     {
         final IdleStrategy idleStrategy = new BackoffIdleStrategy();
 
-        final int bufferLength = 256 + RingBufferDescriptor.TRAILER_LENGTH;
+        final int bufferLength = 4096 + RingBufferDescriptor.TRAILER_LENGTH;
         final OneToOneRingBuffer innerRingBuffer = new OneToOneRingBuffer(new UnsafeBuffer(ByteBuffer.allocateDirect(bufferLength)));
         final OneToOneRingBuffer outerRingBuffer = new OneToOneRingBuffer(new UnsafeBuffer(ByteBuffer.allocateDirect(bufferLength)));
 

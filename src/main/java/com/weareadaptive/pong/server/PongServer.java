@@ -14,8 +14,8 @@ public class PongServer
     {
         final IdleStrategy idleStrategy = new SleepingIdleStrategy();
 
-        final Bar player1 = new Bar();
-        final Bar player2 = new Bar();
+        final Bar player1 = new Bar(200, 300, 20, 100);
+        final Bar player2 = new Bar(500, 300, 20, 100);
         final Ball ball = new Ball();
         final GameState gameState = new GameState(player1, player2, ball);
 
