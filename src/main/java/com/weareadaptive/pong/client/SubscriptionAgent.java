@@ -7,9 +7,12 @@ import io.aeron.logbuffer.Header;
 import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
 import src.main.resources.InputCommandDecoder;
 import src.main.resources.MessageHeaderDecoder;
+
+import java.nio.ByteBuffer;
 
 import static com.weareadaptive.pong.Globals.*;
 
@@ -75,20 +78,8 @@ public class SubscriptionAgent implements Agent
 
     private void handleFragment(final DirectBuffer buffer, final int offset, final int length, final Header header)
     {
-        // Decode SBE message
-        headerDecoder.wrap(buffer, offset);
-
-        final int actingBlockLength = headerDecoder.blockLength();
-        final int actingVersion = headerDecoder.version();
-
-        final int totalOffset = headerDecoder.encodedLength() + offset;
-        inputDecoder.wrap(buffer, totalOffset, actingBlockLength, actingVersion);
-
-        // TODO: Write to inner ring buffer and manage in visual agent
-//        final String message = inputDecoder.message();
-//        final long netTimestamp = inputDecoder.netTimestamp();
-//        final long inputTimestamp = inputDecoder.inputTimestamp();
-//        final long serverTimestamp = inputDecoder.serverTimestamp();
+        System.out.println("[Subscription Agent] received message from server, writing it to outer ring buffer");
+        outerRingBuffer.write(1, buffer, offset, length);
     }
 
     @Override

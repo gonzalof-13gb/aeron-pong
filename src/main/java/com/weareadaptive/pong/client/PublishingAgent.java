@@ -77,8 +77,6 @@ public class PublishingAgent implements Agent
 
     private void readAndOfferMessage(final int msgTypeId, final MutableDirectBuffer buffer, final int index, final int length)
     {
-        inputEncoder.wrap(buffer, index + HEADER_LENGTH);
-
         final long offer = publication.offer(buffer, index, length);
         if (offer < 0)
         {

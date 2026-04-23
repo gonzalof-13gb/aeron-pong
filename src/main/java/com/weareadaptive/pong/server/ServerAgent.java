@@ -9,7 +9,9 @@ import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
+import src.main.resources.InputCommandDecoder;
 import src.main.resources.InputCommandEncoder;
+import src.main.resources.MessageHeaderDecoder;
 import src.main.resources.MessageHeaderEncoder;
 
 import java.nio.ByteBuffer;
@@ -23,8 +25,8 @@ public class ServerAgent implements Agent
     private Publication publication;
     private final UnsafeBuffer outBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(256));
 
-    private static final int HEADER_LENGTH = new MessageHeaderEncoder().encodedLength();
-    private final InputCommandEncoder messageEncoder = new InputCommandEncoder();
+    private final MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
+    private final InputCommandDecoder inputDecoder = new InputCommandDecoder();
     private AgentState agentState = AgentState.INITIAL;
 
     @Override
@@ -62,12 +64,13 @@ public class ServerAgent implements Agent
             {
                 if (subscription.isConnected())
                 {
-                    workCount += subscription.poll(this::readAndBroadcastMessage, 10);
+                    workCount += subscription.poll(this::readInput, 10);
                 }
                 else
                 {
                     onClose();
                 }
+                sendGameState();
             }
             case STOPPED ->
             {
@@ -76,19 +79,26 @@ public class ServerAgent implements Agent
         return workCount;
     }
 
-    private void readAndBroadcastMessage(final DirectBuffer buffer, final int offset, final int length, final Header header)
+    private void readInput(final DirectBuffer buffer, final int offset, final int length, final Header header)
     {
-        System.out.println("|Server Agent| Received message");
+        System.out.println("[Server Agent] Received input from player");
+        inputDecoder.wrapAndApplyHeader(buffer, offset, headerDecoder);
+        System.out.println("[Server Agent] InputType: " + inputDecoder.inputType() + " - PlayerId: " + inputDecoder.playerId());
 
+        // For now just resend input to draw what's happening
         outBuffer.putBytes(0, buffer, offset, length);
-        messageEncoder.wrap(outBuffer, HEADER_LENGTH);
-        //messageEncoder.serverTimestamp(System.nanoTime());
-
         final long offerResult = publication.offer(outBuffer, 0, length);
         if (offerResult < 0)
         {
             System.err.println("Server publishing failed | Response Code: " + offerResult);
         }
+
+        // TODO: Apply this input to game state
+    }
+
+    private void sendGameState()
+    {
+        // TODO: Send game state to players
     }
 
     @Override

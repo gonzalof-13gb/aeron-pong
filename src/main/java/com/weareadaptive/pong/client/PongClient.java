@@ -27,7 +27,7 @@ public class PongClient
         final GameWindow gameWindow = new GameWindow(keyboard);
 
         System.out.println("Setup InputAgent");
-        final InputAgent inputAgent = new InputAgent(innerRingBuffer, PLAYER_ID, keyboard, gameWindow);
+        final InputAgent inputAgent = new InputAgent(innerRingBuffer, PLAYER_ID, keyboard);
         final AgentRunner inputAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, inputAgent);
 
         System.out.println("Setup DrawingAgent");
