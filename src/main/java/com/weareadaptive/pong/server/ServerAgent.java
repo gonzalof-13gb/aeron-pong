@@ -31,6 +31,8 @@ public class ServerAgent implements Agent
     private AgentState agentState = AgentState.INITIAL;
 
     private final GameState gameState;
+    private float deltaTime = 0;
+    private long lastTimeNanos = 0;
 
     public ServerAgent(final GameState gameState)
     {
@@ -78,6 +80,7 @@ public class ServerAgent implements Agent
                 {
                     onClose();
                 }
+                update();
                 sendGameState();
             }
             case STOPPED ->
@@ -89,19 +92,10 @@ public class ServerAgent implements Agent
 
     private void readInput(final DirectBuffer buffer, final int offset, final int length, final Header header)
     {
-        System.out.println("[Server Agent] Received input from player");
+        //System.out.println("[Server Agent] Received input from player");
         inputDecoder.wrapAndApplyHeader(buffer, offset, headerDecoder);
-        System.out.println("[Server Agent] InputType: " + inputDecoder.inputType() + " - PlayerId: " + inputDecoder.playerId());
+        //System.out.println("[Server Agent] InputType: " + inputDecoder.inputType() + " - PlayerId: " + inputDecoder.playerId());
 
-        // For now just resend input to draw what's happening
-//        outBuffer.putBytes(0, buffer, offset, length);
-//        final long offerResult = publication.offer(outBuffer, 0, length);
-//        if (offerResult < 0)
-//        {
-//            System.err.println("Server publishing failed | Response Code: " + offerResult);
-//        }
-
-        // TODO: Apply this input to game state
         final short playerId = inputDecoder.playerId();
         final InputType inputType = inputDecoder.inputType();
         final Bar playerToMove = gameState.getPlayerById(playerId);
@@ -110,7 +104,17 @@ public class ServerAgent implements Agent
             System.err.println("[Server Agent] Player id: " + playerId + " does not exist");
             return;
         }
-        playerToMove.move(inputType);
+        playerToMove.setInput(inputType);
+    }
+
+    private void update()
+    {
+        final long now = System.nanoTime();
+        deltaTime = lastTimeNanos == 0 ? 0 : (now - lastTimeNanos) / 1_000_000_000.0f;
+        lastTimeNanos = now;
+
+        gameState.player1().update(deltaTime);
+        gameState.player2().update(deltaTime);
     }
 
     private void sendGameState()

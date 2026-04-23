@@ -2,6 +2,9 @@ package com.weareadaptive.pong.client;
 
 import javax.swing.*;
 
+import static com.weareadaptive.pong.Globals.SCREEN_HEIGHT;
+import static com.weareadaptive.pong.Globals.SCREEN_WIDTH;
+
 public class GameWindow
 {
     private final JFrame frame;
@@ -13,7 +16,7 @@ public class GameWindow
         panel = new GamePanel();
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         frame.setResizable(false);
         frame.add(panel);
         frame.addKeyListener(keyboard);

@@ -4,12 +4,13 @@ import src.main.resources.InputType;
 
 public class Bar
 {
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private int width;
     private int height;
 
-    private final int velocity = 1;
+    private final float velocity = 500.0f;
+    private InputType currentInput = InputType.NULL_VAL;
 
     public Bar(final int x, final int y, final int width, final int height)
     {
@@ -19,23 +20,28 @@ public class Bar
         this.height = height;
     }
 
-    public void move(InputType inputType)
+    public void setInput(final InputType inputType)
     {
-        switch (inputType)
+        this.currentInput = inputType;
+    }
+
+    public void update(final float deltaTime)
+    {
+        switch (currentInput)
         {
-            case UP -> y += velocity;
-            case DOWN -> y -= velocity;
+            case UP -> y -= velocity * deltaTime;
+            case DOWN -> y += velocity * deltaTime;
         }
     }
 
     public int x()
     {
-        return x;
+        return Math.round(x);
     }
 
     public int y()
     {
-        return y;
+        return (int)y;
     }
 
     public int width()

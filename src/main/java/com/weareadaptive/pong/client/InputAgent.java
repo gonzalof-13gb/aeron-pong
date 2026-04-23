@@ -44,6 +44,10 @@ public class InputAgent implements Agent
         {
             sendMessage(InputType.DOWN);
         }
+        else
+        {
+            sendMessage(InputType.NULL_VAL);
+        }
 
         return workCount;
     }
