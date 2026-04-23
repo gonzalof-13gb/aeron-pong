@@ -1,8 +1,10 @@
 package com.weareadaptive.pong.client;
 
+import com.weareadaptive.pong.utils.Vector2;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
+import src.main.resources.GameStateDecoder;
 import src.main.resources.InputCommandDecoder;
 import src.main.resources.InputType;
 import src.main.resources.MessageHeaderDecoder;
@@ -14,8 +16,7 @@ public class DrawingAgent implements Agent
     private final OneToOneRingBuffer outerRingBuffer;
     private final MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
 
-    // TODO: Delete
-    private final InputCommandDecoder inputCommandDecoder = new InputCommandDecoder();
+    private final GameStateDecoder gameStateDecoder = new GameStateDecoder();
 
     public DrawingAgent(final OneToOneRingBuffer outerRingBuffer, final GameWindow gameWindow)
     {
@@ -36,14 +37,18 @@ public class DrawingAgent implements Agent
 
     private void readAndDrawGameState(final int msgTypeId, final MutableDirectBuffer buffer, final int index, final int length)
     {
-        System.out.println("[Drawing Agent] received message from outer ring buffer");
+        //System.out.println("[Drawing Agent] received message from outer ring buffer");
 
-        inputCommandDecoder.wrapAndApplyHeader(buffer, index, headerDecoder);
+        gameStateDecoder.wrapAndApplyHeader(buffer, index, headerDecoder);
 
-        final InputType inputType = inputCommandDecoder.inputType();
-        final short playerId = inputCommandDecoder.playerId();
+        final int player1x = gameStateDecoder.player1position().x();
+        final int player1y = gameStateDecoder.player1position().y();
 
-        gameWindow.drawText(inputType.name());
+        final int player2x = gameStateDecoder.player2position().x();
+        final int player2y = gameStateDecoder.player2position().y();
+
+
+        gameWindow.drawText(Integer.toString(player1y));
     }
 
     @Override

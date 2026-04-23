@@ -11,9 +11,7 @@ import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
-import src.main.resources.InputCommandDecoder;
-import src.main.resources.InputType;
-import src.main.resources.MessageHeaderDecoder;
+import src.main.resources.*;
 
 import java.nio.ByteBuffer;
 
@@ -27,7 +25,9 @@ public class ServerAgent implements Agent
     private final UnsafeBuffer outBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(256));
 
     private final MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
+    private final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
     private final InputCommandDecoder inputDecoder = new InputCommandDecoder();
+    private final GameStateEncoder gameStateEncoder = new GameStateEncoder();
     private AgentState agentState = AgentState.INITIAL;
 
     private final GameState gameState;
@@ -94,12 +94,12 @@ public class ServerAgent implements Agent
         System.out.println("[Server Agent] InputType: " + inputDecoder.inputType() + " - PlayerId: " + inputDecoder.playerId());
 
         // For now just resend input to draw what's happening
-        outBuffer.putBytes(0, buffer, offset, length);
-        final long offerResult = publication.offer(outBuffer, 0, length);
-        if (offerResult < 0)
-        {
-            System.err.println("Server publishing failed | Response Code: " + offerResult);
-        }
+//        outBuffer.putBytes(0, buffer, offset, length);
+//        final long offerResult = publication.offer(outBuffer, 0, length);
+//        if (offerResult < 0)
+//        {
+//            System.err.println("Server publishing failed | Response Code: " + offerResult);
+//        }
 
         // TODO: Apply this input to game state
         final short playerId = inputDecoder.playerId();
@@ -115,7 +115,21 @@ public class ServerAgent implements Agent
 
     private void sendGameState()
     {
-        // TODO: Send game state to players
+        gameStateEncoder.wrapAndApplyHeader(outBuffer, 0, headerEncoder);
+        gameStateEncoder.player1position()
+                .x(gameState.player1().position().x())
+                .y(gameState.player1().position().y());
+        gameStateEncoder.player2position()
+                .x(gameState.player2().position().x())
+                .y(gameState.player2().position().y());
+
+        // TODO: Ball, scores, etc...
+        final int length = headerEncoder.encodedLength() + gameStateEncoder.encodedLength();
+        final long offerResult = publication.offer(outBuffer, 0, length);
+        if (offerResult < 0)
+        {
+            System.err.println("Server publishing failed | Response Code: " + offerResult);
+        }
     }
 
     @Override

@@ -14,6 +14,11 @@
             <type name="version"     primitiveType="uint16"/>
         </composite>
 
+        <composite name="vector2">
+            <type name="x" primitiveType="int32"/>
+            <type name="y" primitiveType="int32"/>
+        </composite>
+
         <enum name="InputType" encodingType="uint16">
             <validValue name="UP">0</validValue>
             <validValue name="DOWN">1</validValue>
@@ -23,5 +28,10 @@
     <sbe:message name="InputCommand" id="1">
         <field name="playerId" id="1" type="int16"/>
         <field name="inputType" id="2" type="InputType"/>
+    </sbe:message>
+
+    <sbe:message name="GameState" id="2">
+        <field name="player1position" id="1" type="vector2"/>
+        <field name="player2position" id="2" type="vector2"/>
     </sbe:message>
 </sbe:messageSchema>

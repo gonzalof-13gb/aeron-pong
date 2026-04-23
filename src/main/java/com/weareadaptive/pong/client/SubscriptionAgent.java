@@ -71,7 +71,7 @@ public class SubscriptionAgent implements Agent
 
     private void handleFragment(final DirectBuffer buffer, final int offset, final int length, final Header header)
     {
-        System.out.println("[Subscription Agent] received message from server, writing it to outer ring buffer");
+        //System.out.println("[Subscription Agent] received message from server, writing it to outer ring buffer");
         outerRingBuffer.write(1, buffer, offset, length);
     }
 
