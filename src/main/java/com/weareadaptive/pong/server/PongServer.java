@@ -18,8 +18,9 @@ public class PongServer
     {
         final IdleStrategy idleStrategy = new SleepingIdleStrategy();
 
-        final Bar player1 = new Bar(50, SCREEN_HEIGHT / 2 + 50, 20, 100);
-        final Bar player2 = new Bar(SCREEN_WIDTH - 75, SCREEN_HEIGHT / 2 + 50, 20, 100);
+        final int startY = SCREEN_HEIGHT / 2 - 50;
+        final Bar player1 = new Bar(50, startY, 20, 100);
+        final Bar player2 = new Bar(SCREEN_WIDTH - 75, startY, 20, 100);
         final Ball ball = new Ball();
         final IntArrayList scores = new IntArrayList(new int[]{0, 0}, 2, -1);
         final GameState gameState = new GameState(player1, player2, ball, scores);

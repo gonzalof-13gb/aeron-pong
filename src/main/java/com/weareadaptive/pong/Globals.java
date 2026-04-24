@@ -22,6 +22,6 @@ public class Globals
             .alias("ChatOutboundChannel")
             .build();
 
-    public static int SCREEN_WIDTH = 800;
+    public static int SCREEN_WIDTH = 1000;
     public static int SCREEN_HEIGHT = 600;
 }

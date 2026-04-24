@@ -1,7 +1,12 @@
 package com.weareadaptive.pong.client;
 
+import org.agrona.collections.IntArrayList;
+
 import javax.swing.*;
 import java.awt.*;
+
+import static com.weareadaptive.pong.Globals.SCREEN_HEIGHT;
+import static com.weareadaptive.pong.Globals.SCREEN_WIDTH;
 
 public class GamePanel extends JPanel
 {
@@ -11,9 +16,19 @@ public class GamePanel extends JPanel
     private final PlayerData player1 = new PlayerData();
     private final PlayerData player2 = new PlayerData();
 
+    private final int decorationWidth = 2;
+    private final int decorationHeight = 10;
+    private final IntArrayList decorationPositions = new IntArrayList();
+
     public GamePanel()
     {
         setBackground(Color.BLACK);
+
+        final int decorationSeparation = 10;
+        for (int i = 0; i < SCREEN_HEIGHT; i += decorationHeight + decorationSeparation)
+        {
+            decorationPositions.add(i);
+        }
     }
 
     public void drawScore(final short playerId, final int score)
@@ -37,11 +52,14 @@ public class GamePanel extends JPanel
         super.paintComponent(g);
         g.setColor(Color.WHITE);
 
-        g.setFont(new Font("Arial", Font.PLAIN, 48));
-        g.drawString(score1, 275, 50);
-        g.drawString(score2, 475, 50);
+        g.setFont(new Font("Arial", Font.PLAIN, 50));
+        g.drawString(score1, (SCREEN_WIDTH / 2) - 100, 50);
+        g.drawString(score2, (SCREEN_WIDTH / 2) + 75, 50);
 
         g.fillRect(player1.x(),  player1.y(), player1.width(), player1.height());
         g.fillRect(player2.x(), player2.y(), player2.width(), player2.height());
+
+        final int decorationX = (SCREEN_WIDTH / 2) - (decorationWidth / 2);
+        decorationPositions.forEach(y -> g.fillRect(decorationX, y, decorationWidth, decorationHeight));
     }
 }
