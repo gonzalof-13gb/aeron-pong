@@ -35,5 +35,7 @@
         <field name="player1size"     id="2" type="vector2"/>
         <field name="player2position" id="3" type="vector2"/>
         <field name="player2size"     id="4" type="vector2"/>
+        <field name="ballPosition"    id="5" type="vector2"/>
+        <field name="ballRadius"      id="6" type="int32"/>
     </sbe:message>
 </sbe:messageSchema>

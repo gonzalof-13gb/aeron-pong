@@ -115,6 +115,7 @@ public class ServerAgent implements Agent
 
         gameState.player1().update(deltaTime);
         gameState.player2().update(deltaTime);
+        gameState.ball().update(deltaTime, gameState.player1(), gameState.player2());
     }
 
     private void sendGameState()
@@ -134,7 +135,12 @@ public class ServerAgent implements Agent
                 .x(gameState.player2().width())
                 .y(gameState.player2().height());
 
-        // TODO: Ball, scores, etc...
+        gameStateEncoder.ballPosition()
+                .x(gameState.ball().getX())
+                .y(gameState.ball().getY());
+        gameStateEncoder.ballRadius(gameState.ball().getRadius());
+
+        // TODO: Scores, etc...
         final int length = headerEncoder.encodedLength() + gameStateEncoder.encodedLength();
         final long offerResult = publication.offer(outBuffer, 0, length);
         if (offerResult < 0)
