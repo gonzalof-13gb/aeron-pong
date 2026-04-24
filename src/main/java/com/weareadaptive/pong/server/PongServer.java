@@ -19,7 +19,8 @@ public class PongServer
 
         final Bar player1 = new Bar(50, SCREEN_HEIGHT / 2 + 50, 20, 100);
         final Bar player2 = new Bar(SCREEN_WIDTH - 75, SCREEN_HEIGHT / 2 + 50, 20, 100);
-        final Ball ball = new Ball();
+        final Ball ball = new Ball((float) (SCREEN_WIDTH / 2), (float) (SCREEN_HEIGHT / 2), 10,
+                (float) (Math.random() * 3 - 1), (float) (Math.random() * 2 - 1));
         final GameState gameState = new GameState(player1, player2, ball);
 
         final ServerAgent serverAgent = new ServerAgent(gameState);

@@ -1,5 +1,8 @@
 package com.weareadaptive.pong.server.state;
 
+import static com.weareadaptive.pong.Globals.SCREEN_HEIGHT;
+import static com.weareadaptive.pong.Globals.SCREEN_WIDTH;
+
 public class Ball
 {
     private float x;
@@ -10,10 +13,46 @@ public class Ball
     private float dirX;
     private float dirY;
 
+    private int vel;
+
+    public Ball(final float x, final float y, final int radius, final float dirX, final float dirY)
+    {
+        this.dirX = dirX;
+        this.dirY = dirY;
+        this.radius = radius;
+        this.y = y;
+        this.x = x;
+        vel = 100;
+    }
+
     public void update(final float deltaTime, final Bar player1, final Bar player2)
     {
-        x += dirX * deltaTime;
-        y += dirY * deltaTime;
+        x += (dirX * vel) * deltaTime;
+        y += (dirY * vel) * deltaTime;
+        if(Math.abs(x - 0) < 30 )
+        {
+            lateralBounce();
+        }
+
+        if(Math.abs(x - SCREEN_WIDTH) < 30 )
+        {
+            lateralBounce();
+        }
+
+        if(Math.abs(x - player1.x()) < 25 && Math.abs(y - player1.y()) < 25)
+        {
+            lateralBounce();
+        }
+
+        if(Math.abs(x - player2.x()) < 25 && Math.abs(y - player2.y()) < 25)
+        {
+            lateralBounce();
+        }
+
+        if(Math.abs(y - SCREEN_HEIGHT) < 40 || Math.abs(y - 0) < 20)
+        {
+            verticalBounce();
+        }
         //TODO: bounces
     }
 
@@ -33,8 +72,17 @@ public class Ball
 
     public void verticalBounce()
     {
+        vel = vel + 10;
         dirY = -dirY;
         convertInUnitaryDirection();
+    }
+
+    public void resetPos()
+    {
+        x = SCREEN_WIDTH;
+        y = SCREEN_HEIGHT;
+        dirX = (float) (Math.random() * 3 - 1);
+        dirY = (float) (Math.random() * 2 - 1);
     }
 
     public int getX() {

@@ -25,4 +25,8 @@ public class BallData
     public void setX(int x) {
         this.x = x;
     }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
 }
