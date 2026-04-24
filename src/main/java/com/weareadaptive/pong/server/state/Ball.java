@@ -22,22 +22,13 @@ public class Ball
         this.radius = radius;
         this.y = y;
         this.x = x;
-        vel = 100;
+        vel = 200;
     }
 
     public void update(final float deltaTime, final Bar player1, final Bar player2)
     {
         x += (dirX * vel) * deltaTime;
         y += (dirY * vel) * deltaTime;
-        if(Math.abs(x - 0) < 30 )
-        {
-            lateralBounce();
-        }
-
-        if(Math.abs(x - SCREEN_WIDTH) < 30 )
-        {
-            lateralBounce();
-        }
 
         if(Math.abs(x - player1.x()) < 25 && Math.abs(y - player1.y()) < 25)
         {
@@ -54,6 +45,14 @@ public class Ball
             verticalBounce();
         }
         //TODO: bounces
+    }
+
+    public void reset()
+    {
+        x = (float) SCREEN_WIDTH / 2;
+        y = (float) SCREEN_HEIGHT / 2;
+        dirX = (float) (Math.random() * 3 - 1);
+        dirY = (float) (Math.random() * 2 - 1);
     }
 
     private void convertInUnitaryDirection()

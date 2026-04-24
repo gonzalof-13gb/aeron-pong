@@ -56,7 +56,6 @@ public class GamePanel extends JPanel
         repaint();
     }
 
-
     @Override
     protected void paintComponent(final Graphics g)
     {

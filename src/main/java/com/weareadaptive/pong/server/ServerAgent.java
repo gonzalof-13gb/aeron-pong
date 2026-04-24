@@ -116,6 +116,17 @@ public class ServerAgent implements Agent
         gameState.player1().update(deltaTime);
         gameState.player2().update(deltaTime);
         gameState.ball().update(deltaTime, gameState.player1(), gameState.player2());
+
+        if (gameState.ball().getX() <= gameState.ball().getRadius())
+        {
+            gameState.scores().setInt(1, gameState.scores().getInt(1) + 1);
+            gameState.ball().reset();
+        }
+        else if (gameState.ball().getX() >= SCREEN_WIDTH - gameState.ball().getRadius())
+        {
+            gameState.scores().setInt(0, gameState.scores().getInt(0) + 1);
+            gameState.ball().reset();
+        }
     }
 
     private void sendGameState()
