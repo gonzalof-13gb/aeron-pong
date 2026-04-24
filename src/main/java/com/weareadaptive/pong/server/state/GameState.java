@@ -1,6 +1,11 @@
 package com.weareadaptive.pong.server.state;
 
-public record GameState(Bar player1, Bar player2, Ball ball)
+import org.agrona.collections.IntArrayList;
+
+public record GameState(Bar player1,
+                        Bar player2,
+                        Ball ball,
+                        IntArrayList scores)
 {
     public Bar getPlayerById(final short playerId)
     {

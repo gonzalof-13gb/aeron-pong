@@ -134,6 +134,9 @@ public class ServerAgent implements Agent
                 .x(gameState.player2().width())
                 .y(gameState.player2().height());
 
+        gameStateEncoder.player1score(gameState.scores().getFirst());
+        gameStateEncoder.player2score(gameState.scores().getLast());
+
         // TODO: Ball, scores, etc...
         final int length = headerEncoder.encodedLength() + gameStateEncoder.encodedLength();
         final long offerResult = publication.offer(outBuffer, 0, length);

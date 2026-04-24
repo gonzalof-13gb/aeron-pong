@@ -2,6 +2,8 @@ package com.weareadaptive.pong.server.state;
 
 import src.main.resources.InputType;
 
+import static com.weareadaptive.pong.Globals.SCREEN_HEIGHT;
+
 public class Bar
 {
     private float x;
@@ -29,8 +31,20 @@ public class Bar
     {
         switch (currentInput)
         {
-            case UP -> y -= velocity * deltaTime;
-            case DOWN -> y += velocity * deltaTime;
+            case UP ->
+            {
+                if (y > 0)
+                {
+                    y -= velocity * deltaTime;
+                }
+            }
+            case DOWN ->
+            {
+                if (y < SCREEN_HEIGHT - height - 25)
+                {
+                    y += velocity * deltaTime;
+                }
+            }
         }
     }
 

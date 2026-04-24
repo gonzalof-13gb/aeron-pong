@@ -24,9 +24,9 @@ public class GameWindow
         frame.requestFocusInWindow();
     }
 
-    public void drawText(final String text)
+    public void drawScore(final short playerId, final int score)
     {
-        panel.drawText(text);
+        panel.drawScore(playerId, score);
     }
 
     public void drawPlayer(final short playerId, final int x, final int y, final int width, final int height)

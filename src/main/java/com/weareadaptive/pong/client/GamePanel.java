@@ -5,7 +5,8 @@ import java.awt.*;
 
 public class GamePanel extends JPanel
 {
-    private String text = "";
+    private String score1 = "0";
+    private String score2 = "0";
 
     private final PlayerData player1 = new PlayerData();
     private final PlayerData player2 = new PlayerData();
@@ -15,10 +16,10 @@ public class GamePanel extends JPanel
         setBackground(Color.BLACK);
     }
 
-    public void drawText(final String text)
+    public void drawScore(final short playerId, final int score)
     {
-        this.text = text;
-        repaint();
+        if (playerId == 1) score1 = Integer.toString(score);
+        else score2 = Integer.toString(score);
     }
 
     public void drawPlayer(final short playerId, final int x, final int y, final int width, final int height)
@@ -36,7 +37,10 @@ public class GamePanel extends JPanel
         super.paintComponent(g);
         g.setColor(Color.WHITE);
 
-        System.out.println(player1.x() + " " + player1.y() + " " + player1.width() + " " + player1.height());
+        g.setFont(new Font("Arial", Font.PLAIN, 48));
+        g.drawString(score1, 275, 50);
+        g.drawString(score2, 475, 50);
+
         g.fillRect(player1.x(),  player1.y(), player1.width(), player1.height());
         g.fillRect(player2.x(), player2.y(), player2.width(), player2.height());
     }

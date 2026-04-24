@@ -4,6 +4,7 @@ import com.weareadaptive.pong.server.state.Ball;
 import com.weareadaptive.pong.server.state.Bar;
 import com.weareadaptive.pong.server.state.GameState;
 import com.weareadaptive.pong.utils.AgentErrorHandler;
+import org.agrona.collections.IntArrayList;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
 import org.agrona.concurrent.SleepingIdleStrategy;
@@ -20,7 +21,8 @@ public class PongServer
         final Bar player1 = new Bar(50, SCREEN_HEIGHT / 2 + 50, 20, 100);
         final Bar player2 = new Bar(SCREEN_WIDTH - 75, SCREEN_HEIGHT / 2 + 50, 20, 100);
         final Ball ball = new Ball();
-        final GameState gameState = new GameState(player1, player2, ball);
+        final IntArrayList scores = new IntArrayList(new int[]{0, 0}, 2, -1);
+        final GameState gameState = new GameState(player1, player2, ball, scores);
 
         final ServerAgent serverAgent = new ServerAgent(gameState);
         final AgentRunner serverAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, serverAgent);
