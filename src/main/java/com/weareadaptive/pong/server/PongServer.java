@@ -18,6 +18,8 @@ public class PongServer
     {
         final IdleStrategy idleStrategy = new SleepingIdleStrategy();
 
+        final Ball ball = new Ball((float) (SCREEN_WIDTH / 2), (float) (SCREEN_HEIGHT / 2), 10,
+                (float) (Math.random() * 3 - 1), (float) (Math.random() * 2 - 1));
         final int startY = SCREEN_HEIGHT / 2 - 50;
         final Bar player1 = new Bar(50, startY, 20, 100);
         final Bar player2 = new Bar(SCREEN_WIDTH - 75, startY, 20, 100);

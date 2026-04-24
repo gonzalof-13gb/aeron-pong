@@ -51,3 +51,10 @@ tasks.register<JavaExec>("generateCodecs") {
 sourceSets.main {
     java.srcDir(sbeOutputDir)
 }
+
+tasks.register<JavaExec>("runClient") {
+    group = "application"
+    mainClass.set("com.weareadaptive.pong.client.PongClient")
+    classpath = sourceSets.main.get().runtimeClasspath
+    args(project.findProperty("playerId") ?: "1")
+}

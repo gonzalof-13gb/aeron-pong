@@ -34,6 +34,11 @@ public class GameWindow
         panel.drawPlayer(playerId, x, y, width, height);
     }
 
+    public void drawBall(final int x, final int y, final int radius)
+    {
+        panel.drawBall(x, y, radius);
+    }
+
     public void repaint()
     {
         panel.repaint();
