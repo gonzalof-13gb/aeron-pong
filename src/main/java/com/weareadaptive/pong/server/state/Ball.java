@@ -22,7 +22,7 @@ public class Ball
         this.radius = radius;
         this.y = y;
         this.x = x;
-        vel = 200;
+        vel = 250;
     }
 
     public void update(final float deltaTime, final Bar player1, final Bar player2)
@@ -30,12 +30,12 @@ public class Ball
         x += (dirX * vel) * deltaTime;
         y += (dirY * vel) * deltaTime;
 
-        if(Math.abs(x - player1.x()) < 25 && Math.abs(y - player1.y()) < 25)
+        if((player1.y() <= y && y <= player1.y() + 100) && (player1.x() + 20 <= x && x <= player1.x() + 30))
         {
             lateralBounce();
         }
 
-        if(Math.abs(x - player2.x()) < 25 && Math.abs(y - player2.y()) < 25)
+        if((player2.y() <= y && y <= player2.y() + 100) && (player2.x() >= x && x >= player2.x() - 10))
         {
             lateralBounce();
         }
@@ -44,14 +44,14 @@ public class Ball
         {
             verticalBounce();
         }
-        //TODO: bounces
     }
 
     public void reset()
     {
+        vel = 250;
         x = (float) SCREEN_WIDTH / 2;
         y = (float) SCREEN_HEIGHT / 2;
-        dirX = (float) (Math.random() * 3 - 1);
+        dirX = Math.random() < 0.5 ? 1f : -1f;
         dirY = (float) (Math.random() * 2 - 1);
     }
 
@@ -65,6 +65,7 @@ public class Ball
     private void lateralBounce()
     {
         //TODO: change direction regards to the distance of the center of the bar
+        vel = vel + 10;
         dirX = -dirX;
         convertInUnitaryDirection();
     }
@@ -74,14 +75,6 @@ public class Ball
         vel = vel + 10;
         dirY = -dirY;
         convertInUnitaryDirection();
-    }
-
-    public void resetPos()
-    {
-        x = SCREEN_WIDTH;
-        y = SCREEN_HEIGHT;
-        dirX = (float) (Math.random() * 3 - 1);
-        dirY = (float) (Math.random() * 2 - 1);
     }
 
     public int getX() {
