@@ -19,10 +19,12 @@ public class SubscriptionAgent implements Agent
     private AgentState agentState = AgentState.INITIAL;
 
     private final OneToOneRingBuffer outerRingBuffer;
+    private final String outboundChannel;
 
-    public SubscriptionAgent(final OneToOneRingBuffer outerRingBuffer)
+    public SubscriptionAgent(final OneToOneRingBuffer outerRingBuffer, final String outboundChannel)
     {
         this.outerRingBuffer = outerRingBuffer;
+        this.outboundChannel = outboundChannel;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class SubscriptionAgent implements Agent
             {
                 if (subscription == null)
                 {
-                    subscription = aeron.addSubscription(CHAT_OUTBOUND_CHANNEL, STREAM_ID);
+                    subscription = aeron.addSubscription(outboundChannel, STREAM_ID);
                 }
                 else if (subscription.isConnected())
                 {
@@ -68,10 +70,8 @@ public class SubscriptionAgent implements Agent
         return workCount;
     }
 
-
     private void handleFragment(final DirectBuffer buffer, final int offset, final int length, final Header header)
     {
-        //System.out.println("[Subscription Agent] received message from server, writing it to outer ring buffer");
         outerRingBuffer.write(1, buffer, offset, length);
     }
 

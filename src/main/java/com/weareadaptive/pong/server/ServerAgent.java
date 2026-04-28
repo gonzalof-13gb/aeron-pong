@@ -31,12 +31,16 @@ public class ServerAgent implements Agent
     private AgentState agentState = AgentState.INITIAL;
 
     private final GameState gameState;
+    private final String inboundChannel;
+    private final String outboundChannel;
     private float deltaTime = 0;
     private long lastTimeNanos = 0;
 
-    public ServerAgent(final GameState gameState)
+    public ServerAgent(final GameState gameState, final String inboundChannel, final String outboundChannel)
     {
         this.gameState = gameState;
+        this.inboundChannel = inboundChannel;
+        this.outboundChannel = outboundChannel;
     }
 
     @Override
@@ -57,12 +61,12 @@ public class ServerAgent implements Agent
             {
                 if (publication == null)
                 {
-                    publication = aeron.addPublication(CHAT_OUTBOUND_CHANNEL, STREAM_ID);
+                    publication = aeron.addPublication(outboundChannel, STREAM_ID);
                 }
 
                 if (subscription == null)
                 {
-                    subscription = aeron.addSubscription(CHAT_INBOUND_CHANNEL, STREAM_ID);
+                    subscription = aeron.addSubscription(inboundChannel, STREAM_ID);
                 }
 
                 if (publication.isConnected() && subscription.isConnected())
@@ -72,14 +76,7 @@ public class ServerAgent implements Agent
             }
             case STEADY ->
             {
-                if (subscription.isConnected())
-                {
-                    workCount += subscription.poll(this::readInput, 10);
-                }
-                else
-                {
-                    onClose();
-                }
+                workCount += subscription.poll(this::readInput, 10);
                 update();
                 sendGameState();
             }
@@ -93,9 +90,7 @@ public class ServerAgent implements Agent
 
     private void readInput(final DirectBuffer buffer, final int offset, final int length, final Header header)
     {
-        //System.out.println("[Server Agent] Received input from player");
         inputDecoder.wrapAndApplyHeader(buffer, offset, headerDecoder);
-        //System.out.println("[Server Agent] InputType: " + inputDecoder.inputType() + " - PlayerId: " + inputDecoder.playerId());
 
         final short playerId = inputDecoder.playerId();
         final InputType inputType = inputDecoder.inputType();
@@ -152,11 +147,9 @@ public class ServerAgent implements Agent
                 .y(gameState.ball().getY());
         gameStateEncoder.ballRadius(gameState.ball().getRadius());
 
-        // TODO: Scores, etc...
         gameStateEncoder.player1score(gameState.scores().getFirst());
         gameStateEncoder.player2score(gameState.scores().getLast());
 
-        // TODO: Ball, scores, etc...
         final int length = headerEncoder.encodedLength() + gameStateEncoder.encodedLength();
         final long offerResult = publication.offer(outBuffer, 0, length);
         if (offerResult < 0)

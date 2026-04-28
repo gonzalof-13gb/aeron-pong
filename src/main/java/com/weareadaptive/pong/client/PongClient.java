@@ -5,7 +5,11 @@ import org.agrona.concurrent.*;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
 import org.agrona.concurrent.ringbuffer.RingBufferDescriptor;
 
+import javax.swing.*;
+import java.awt.*;
 import java.nio.ByteBuffer;
+
+import static com.weareadaptive.pong.Globals.*;
 
 public class PongClient
 {
@@ -14,8 +18,18 @@ public class PongClient
         if (args.length != 1)
         {
             System.err.println("[Pong Client] Missing player id input argument in main() method");
+            System.exit(1);
         }
         final short playerId = (short) Integer.parseInt(args[0]);
+
+        final String serverIp = askServerIp();
+        if (serverIp == null)
+        {
+            System.exit(0);
+        }
+
+        final String inboundChannel = buildInboundChannel(serverIp);
+        final String outboundChannel = buildOutboundChannel(serverIp);
 
         final IdleStrategy idleStrategy = new SleepingMillisIdleStrategy(1);
 
@@ -35,11 +49,11 @@ public class PongClient
         final AgentRunner drawingAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, drawingAgent);
 
         System.out.println("Setup PublishingAgent");
-        final PublishingAgent publishingAgent = new PublishingAgent(innerRingBuffer);
+        final PublishingAgent publishingAgent = new PublishingAgent(innerRingBuffer, inboundChannel);
         final AgentRunner publishingAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, publishingAgent);
 
         System.out.println("Setup SubscriptionAgent");
-        final SubscriptionAgent subscriptionAgent = new SubscriptionAgent(outerRingBuffer);
+        final SubscriptionAgent subscriptionAgent = new SubscriptionAgent(outerRingBuffer, outboundChannel);
         final AgentRunner subscriptionAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, subscriptionAgent);
 
         System.out.println("Start agent runners");
@@ -47,5 +61,26 @@ public class PongClient
         AgentRunner.startOnThread(drawingAgentRunner);
         AgentRunner.startOnThread(publishingAgentRunner);
         AgentRunner.startOnThread(subscriptionAgentRunner);
+    }
+
+    private static String askServerIp()
+    {
+        final JTextField ipField = new JTextField(getLocalIp(), 20);
+
+        final JPanel panel = new JPanel(new GridLayout(2, 1, 0, 8));
+        panel.add(new JLabel("Server IP address:"));
+        panel.add(ipField);
+
+        final int result = JOptionPane.showConfirmDialog(
+                null, panel, "Aeron Pong - Connect",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result != JOptionPane.OK_OPTION)
+        {
+            return null;
+        }
+
+        final String ip = ipField.getText().trim();
+        return ip.isEmpty() ? null : ip;
     }
 }

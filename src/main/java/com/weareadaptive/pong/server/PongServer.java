@@ -7,16 +7,23 @@ import com.weareadaptive.pong.utils.AgentErrorHandler;
 import org.agrona.collections.IntArrayList;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SleepingIdleStrategy;
 import org.agrona.concurrent.SleepingMillisIdleStrategy;
 
-import static com.weareadaptive.pong.Globals.SCREEN_HEIGHT;
-import static com.weareadaptive.pong.Globals.SCREEN_WIDTH;
+import static com.weareadaptive.pong.Globals.*;
 
 public class PongServer
 {
     public static void main(final String[] args)
     {
+        final String serverIp = getLocalIp();
+
+        final String inboundChannel = buildInboundChannel(serverIp);
+        final String outboundChannel = buildOutboundChannel(serverIp);
+
+        System.out.println("Server IP: " + serverIp);
+        System.out.println("Inbound:   " + inboundChannel);
+        System.out.println("Outbound:  " + outboundChannel);
+
         final IdleStrategy idleStrategy = new SleepingMillisIdleStrategy(1);
 
         final Ball ball = new Ball((float) (SCREEN_WIDTH / 2), (float) (SCREEN_HEIGHT / 2), 10,
@@ -27,7 +34,7 @@ public class PongServer
         final IntArrayList scores = new IntArrayList(new int[]{0, 0}, 2, -1);
         final GameState gameState = new GameState(player1, player2, ball, scores);
 
-        final ServerAgent serverAgent = new ServerAgent(gameState);
+        final ServerAgent serverAgent = new ServerAgent(gameState, inboundChannel, outboundChannel);
         final AgentRunner serverAgentRunner = new AgentRunner(idleStrategy, new AgentErrorHandler(), null, serverAgent);
 
         AgentRunner.startOnThread(serverAgentRunner);

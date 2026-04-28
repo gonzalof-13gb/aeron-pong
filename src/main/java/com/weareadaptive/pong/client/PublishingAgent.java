@@ -18,10 +18,12 @@ public class PublishingAgent implements Agent
     private AgentState agentState = AgentState.INITIAL;
 
     private final OneToOneRingBuffer ringBuffer;
+    private final String inboundChannel;
 
-    public PublishingAgent(final OneToOneRingBuffer ringBuffer)
+    public PublishingAgent(final OneToOneRingBuffer ringBuffer, final String inboundChannel)
     {
         this.ringBuffer = ringBuffer;
+        this.inboundChannel = inboundChannel;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class PublishingAgent implements Agent
             {
                 if (publication == null)
                 {
-                    publication = aeron.addPublication(CHAT_INBOUND_CHANNEL, STREAM_ID);
+                    publication = aeron.addPublication(inboundChannel, STREAM_ID);
                 }
                 else if (publication.isConnected())
                 {
