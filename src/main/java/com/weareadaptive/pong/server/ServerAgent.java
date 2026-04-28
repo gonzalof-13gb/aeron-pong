@@ -22,7 +22,7 @@ public class ServerAgent implements Agent
     private Aeron aeron;
     private Subscription subscription;
     private Publication publication;
-    private final UnsafeBuffer outBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(256));
+    private final UnsafeBuffer outBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(2048));
 
     private final MessageHeaderDecoder headerDecoder = new MessageHeaderDecoder();
     private final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
@@ -87,6 +87,7 @@ public class ServerAgent implements Agent
             {
             }
         }
+
         return workCount;
     }
 

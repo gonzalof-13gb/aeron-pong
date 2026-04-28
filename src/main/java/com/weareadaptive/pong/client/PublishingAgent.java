@@ -6,23 +6,15 @@ import io.aeron.Publication;
 import org.agrona.CloseHelper;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.Agent;
-import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
-import src.main.resources.InputCommandEncoder;
-import src.main.resources.MessageHeaderEncoder;
-
-import java.nio.ByteBuffer;
 
 import static com.weareadaptive.pong.Globals.*;
 
 public class PublishingAgent implements Agent
 {
-    private final UnsafeBuffer buffer = new UnsafeBuffer(ByteBuffer.allocateDirect(256));
     private Aeron aeron;
     private Publication publication;
 
-    private static final int HEADER_LENGTH = new MessageHeaderEncoder().encodedLength();
-    private final InputCommandEncoder inputEncoder = new InputCommandEncoder();
     private AgentState agentState = AgentState.INITIAL;
 
     private final OneToOneRingBuffer ringBuffer;
