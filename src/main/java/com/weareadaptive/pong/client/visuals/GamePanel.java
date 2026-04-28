@@ -1,6 +1,7 @@
-package com.weareadaptive.pong.client;
+package com.weareadaptive.pong.client.visuals;
 
-import com.weareadaptive.pong.server.state.Ball;
+import com.weareadaptive.pong.client.BallData;
+import com.weareadaptive.pong.client.PlayerData;
 import org.agrona.collections.IntArrayList;
 
 import javax.swing.*;
@@ -61,8 +62,8 @@ public class GamePanel extends JPanel
     {
         super.paintComponent(g);
         g.setColor(Color.WHITE);
-
         g.setFont(new Font("Arial", Font.PLAIN, 50));
+
         g.drawString(score1, (SCREEN_WIDTH / 2) - 100, 50);
         g.drawString(score2, (SCREEN_WIDTH / 2) + 75, 50);
 

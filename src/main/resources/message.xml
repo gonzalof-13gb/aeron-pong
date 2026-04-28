@@ -23,6 +23,11 @@
             <validValue name="UP">0</validValue>
             <validValue name="DOWN">1</validValue>
         </enum>
+
+        <enum name="GameStatus" encodingType="uint16">
+            <validValue name="WAITING">0</validValue>
+            <validValue name="PLAYING">1</validValue>
+        </enum>
     </types>
 
     <sbe:message name="InputCommand" id="1">
@@ -39,5 +44,6 @@
         <field name="ballRadius"      id="6" type="int32"/>
         <field name="player1score"    id="7" type="uint16"/>
         <field name="player2score"    id="8" type="uint16"/>
+        <field name="gameStatus"      id="9" type="GameStatus"/>
     </sbe:message>
 </sbe:messageSchema>

@@ -22,7 +22,7 @@ public class Ball
         this.radius = radius;
         this.y = y;
         this.x = x;
-        vel = 350;
+        vel = 500;
     }
 
     public void update(final float deltaTime, final Bar player1, final Bar player2)
@@ -77,7 +77,6 @@ public class Ball
         dirY = y - (player.y() + 50);
         convertInUnitaryDirection();
     }
-
 
     public void verticalBounce()
     {

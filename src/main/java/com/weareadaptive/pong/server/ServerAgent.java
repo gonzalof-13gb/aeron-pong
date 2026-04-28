@@ -35,6 +35,7 @@ public class ServerAgent implements Agent
     private final String outboundChannel;
     private float deltaTime = 0;
     private long lastTimeNanos = 0;
+    private GameStatus gameStatus = GameStatus.WAITING;
 
     public ServerAgent(final GameState gameState, final String inboundChannel, final String outboundChannel)
     {
@@ -69,9 +70,12 @@ public class ServerAgent implements Agent
                     subscription = aeron.addSubscription(inboundChannel, STREAM_ID);
                 }
 
-                if (publication.isConnected() && subscription.isConnected())
+                System.out.println(subscription.imageCount());
+
+                if (publication.isConnected() && subscription.isConnected() && subscription.imageCount() >= 2)
                 {
                     agentState = AgentState.STEADY;
+                    gameStatus = GameStatus.PLAYING;
                 }
             }
             case STEADY ->
@@ -149,6 +153,8 @@ public class ServerAgent implements Agent
 
         gameStateEncoder.player1score(gameState.scores().getFirst());
         gameStateEncoder.player2score(gameState.scores().getLast());
+
+        gameStateEncoder.gameStatus(gameStatus);
 
         final int length = headerEncoder.encodedLength() + gameStateEncoder.encodedLength();
         final long offerResult = publication.offer(outBuffer, 0, length);

@@ -4,6 +4,7 @@ import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
 import src.main.resources.GameStateDecoder;
+import src.main.resources.GameStatus;
 import src.main.resources.MessageHeaderDecoder;
 
 public class DrawingAgent implements Agent
@@ -59,6 +60,8 @@ public class DrawingAgent implements Agent
         final int score2 = gameStateDecoder.player2score();
         gameWindow.drawScore((short)1, score1);
         gameWindow.drawScore((short)2, score2);
+
+        gameWindow.setGameStatus(gameStateDecoder.gameStatus());
     }
 
     @Override
