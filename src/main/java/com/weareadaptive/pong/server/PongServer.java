@@ -8,6 +8,7 @@ import org.agrona.collections.IntArrayList;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
 import org.agrona.concurrent.SleepingIdleStrategy;
+import org.agrona.concurrent.SleepingMillisIdleStrategy;
 
 import static com.weareadaptive.pong.Globals.SCREEN_HEIGHT;
 import static com.weareadaptive.pong.Globals.SCREEN_WIDTH;
@@ -16,7 +17,7 @@ public class PongServer
 {
     public static void main(final String[] args)
     {
-        final IdleStrategy idleStrategy = new SleepingIdleStrategy();
+        final IdleStrategy idleStrategy = new SleepingMillisIdleStrategy(1);
 
         final Ball ball = new Ball((float) (SCREEN_WIDTH / 2), (float) (SCREEN_HEIGHT / 2), 10,
                 (float) (Math.random() * 3 - 1), (float) (Math.random() * 2 - 1));

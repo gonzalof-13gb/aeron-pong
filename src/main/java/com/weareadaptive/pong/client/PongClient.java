@@ -1,10 +1,7 @@
 package com.weareadaptive.pong.client;
 
 import com.weareadaptive.pong.utils.AgentErrorHandler;
-import org.agrona.concurrent.AgentRunner;
-import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.UnsafeBuffer;
+import org.agrona.concurrent.*;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
 import org.agrona.concurrent.ringbuffer.RingBufferDescriptor;
 
@@ -20,9 +17,9 @@ public class PongClient
         }
         final short playerId = (short) Integer.parseInt(args[0]);
 
-        final IdleStrategy idleStrategy = new BackoffIdleStrategy();
+        final IdleStrategy idleStrategy = new SleepingMillisIdleStrategy(1);
 
-        final int bufferLength = 4096 + RingBufferDescriptor.TRAILER_LENGTH;
+        final int bufferLength = 2048 + RingBufferDescriptor.TRAILER_LENGTH;
         final OneToOneRingBuffer innerRingBuffer = new OneToOneRingBuffer(new UnsafeBuffer(ByteBuffer.allocateDirect(bufferLength)));
         final OneToOneRingBuffer outerRingBuffer = new OneToOneRingBuffer(new UnsafeBuffer(ByteBuffer.allocateDirect(bufferLength)));
 
@@ -51,6 +48,4 @@ public class PongClient
         AgentRunner.startOnThread(publishingAgentRunner);
         AgentRunner.startOnThread(subscriptionAgentRunner);
     }
-
-
 }

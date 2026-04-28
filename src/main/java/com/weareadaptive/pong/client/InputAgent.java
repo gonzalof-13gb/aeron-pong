@@ -20,7 +20,9 @@ public class InputAgent implements Agent
     private final Keyboard keyboard;
     private final short playerId;
 
-    private final UnsafeBuffer unsafeBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(256));
+    private final UnsafeBuffer unsafeBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(2048));
+
+    private InputType lastSentInput = InputType.NULL_VAL;
 
     public InputAgent(final OneToOneRingBuffer ringBuffer,
                       final short playerId,
@@ -34,22 +36,28 @@ public class InputAgent implements Agent
     @Override
     public int doWork()
     {
-        int workCount = 0;
-
+        final InputType currentInput;
         if (keyboard.isKeyPressed(KeyEvent.VK_UP))
         {
-            sendMessage(InputType.UP);
+            currentInput = InputType.UP;
         }
         else if (keyboard.isKeyPressed(KeyEvent.VK_DOWN))
         {
-            sendMessage(InputType.DOWN);
+            currentInput = InputType.DOWN;
         }
         else
         {
-            sendMessage(InputType.NULL_VAL);
+            currentInput = InputType.NULL_VAL;
         }
 
-        return workCount;
+        if (currentInput != lastSentInput)
+        {
+            sendMessage(currentInput);
+            lastSentInput = currentInput;
+            return 1;
+        }
+
+        return 0;
     }
 
     private void sendMessage(final InputType inputType)
