@@ -114,7 +114,10 @@ public class PongClient
 
         final Keyboard keyboard = new Keyboard();
         final PongClient client = new PongClient(playerId, keyboard);
-        final GameWindow gameWindow = new GameWindow(keyboard, client::connect);
+        final GameWindow[] ref = {null};
+        final GameWindow gameWindow = new GameWindow(keyboard, client::connect,
+                () -> new ReplayClient(ref[0]).loadAndShowRecordings());
+        ref[0] = gameWindow;
         client.setGameWindow(gameWindow);
     }
 }

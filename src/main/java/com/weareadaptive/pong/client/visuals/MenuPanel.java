@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class MenuPanel extends JPanel
 {
-    public MenuPanel(final Runnable onPlay)
+    public MenuPanel(final Runnable onPlay, final Runnable onReplays)
     {
         setBackground(Color.BLACK);
         setLayout(new GridBagLayout());
@@ -27,9 +27,7 @@ public class MenuPanel extends JPanel
         add(playButton, gbc);
 
         final JButton replaysButton = createButton("Replays");
-        replaysButton.setEnabled(false);
-        replaysButton.setForeground(Color.GRAY);
-        replaysButton.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        replaysButton.addActionListener(e -> onReplays.run());
         gbc.gridy = 2;
         add(replaysButton, gbc);
     }
