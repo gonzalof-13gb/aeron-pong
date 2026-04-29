@@ -11,9 +11,47 @@ public class Globals
     public static int STREAM_ID = 10;
     public static String AERON_DIR_PATH = "/Volumes/DevShm/aeron-training";
     public static String ARCHIVE_DIR_PATH = "./pong-archive";
-    public static String ARCHIVE_CONTROL_CHANNEL = "aeron:ipc";
     public static int ARCHIVE_CONTROL_STREAM_ID = 10001;
-    public static int ARCHIVE_CONTROL_RESPONSE_STREAM_ID = 10002;
+    public static int ARCHIVE_SERVER_RESPONSE_STREAM_ID = 10002;
+    public static int ARCHIVE_CLIENT_RESPONSE_STREAM_ID = 10003;
+    public static int ARCHIVE_REPLAY_STREAM_ID = 10004;
+
+    private static final int ARCHIVE_CONTROL_PORT = 8010;
+    private static final int ARCHIVE_SERVER_RESPONSE_PORT = 8011;
+    private static final int ARCHIVE_CLIENT_RESPONSE_PORT = 8013;
+    private static final int ARCHIVE_REPLAY_PORT = 8014;
+
+    public static String buildArchiveControlChannel(final String serverIp)
+    {
+        return new ChannelUriStringBuilder()
+                .media(CommonContext.UDP_MEDIA)
+                .endpoint(serverIp + ":" + ARCHIVE_CONTROL_PORT)
+                .build();
+    }
+
+    public static String buildArchiveServerResponseChannel(final String serverIp)
+    {
+        return new ChannelUriStringBuilder()
+                .media(CommonContext.UDP_MEDIA)
+                .endpoint(serverIp + ":" + ARCHIVE_SERVER_RESPONSE_PORT)
+                .build();
+    }
+
+    public static String buildArchiveClientResponseChannel(final String clientIp)
+    {
+        return new ChannelUriStringBuilder()
+                .media(CommonContext.UDP_MEDIA)
+                .endpoint(clientIp + ":" + ARCHIVE_CLIENT_RESPONSE_PORT)
+                .build();
+    }
+
+    public static String buildArchiveReplayChannel(final String clientIp)
+    {
+        return new ChannelUriStringBuilder()
+                .media(CommonContext.UDP_MEDIA)
+                .endpoint(clientIp + ":" + ARCHIVE_REPLAY_PORT)
+                .build();
+    }
 
     public static String buildInboundChannel(final String serverIp)
     {

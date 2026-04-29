@@ -53,12 +53,13 @@ public class ServerAgent implements Agent
     {
         agentState = AgentState.STARTING;
         aeron = connectAeron();
+        final String localIp = getLocalIp();
         aeronArchive = AeronArchive.connect(new AeronArchive.Context()
                 .aeron(aeron)
-                .controlRequestChannel(ARCHIVE_CONTROL_CHANNEL)
+                .controlRequestChannel(buildArchiveControlChannel(localIp))
                 .controlRequestStreamId(ARCHIVE_CONTROL_STREAM_ID)
-                .controlResponseChannel(ARCHIVE_CONTROL_CHANNEL)
-                .controlResponseStreamId(ARCHIVE_CONTROL_RESPONSE_STREAM_ID));
+                .controlResponseChannel(buildArchiveServerResponseChannel(localIp))
+                .controlResponseStreamId(ARCHIVE_SERVER_RESPONSE_STREAM_ID));
         agentState = AgentState.CONNECTING;
     }
 

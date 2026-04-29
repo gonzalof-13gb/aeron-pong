@@ -18,11 +18,14 @@ public class AeronDriverMain
                 .aeronDirectoryName(AERON_DIR_PATH)
                 .dirDeleteOnStart(true);
 
+        final String serverIp = getLocalIp();
+
         final Archive.Context archiveCtx = new Archive.Context()
                 .aeronDirectoryName(AERON_DIR_PATH)
                 .archiveDirectoryName(ARCHIVE_DIR_PATH)
-                .controlChannel(ARCHIVE_CONTROL_CHANNEL)
-                .controlStreamId(ARCHIVE_CONTROL_STREAM_ID);
+                .controlChannel(buildArchiveControlChannel(serverIp))
+                .controlStreamId(ARCHIVE_CONTROL_STREAM_ID)
+                .replicationChannel("aeron:udp?endpoint=" + serverIp + ":0");
 
         try (final ShutdownSignalBarrier barrier = new ShutdownSignalBarrier();
              final ArchivingMediaDriver ignored = ArchivingMediaDriver.launch(driverCtx, archiveCtx))
