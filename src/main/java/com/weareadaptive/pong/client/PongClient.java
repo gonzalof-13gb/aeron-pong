@@ -29,6 +29,8 @@ public class PongClient
     private AgentRunner publishingRunner;
     private AgentRunner subscriptionRunner;
 
+    private String existingServerIp = null;
+
     public PongClient(final short playerId, final Keyboard keyboard)
     {
         this.playerId = playerId;
@@ -44,14 +46,17 @@ public class PongClient
     {
         stopAgents();
 
-        final String serverIp = askServerIp();
-        if (serverIp == null)
+        if (existingServerIp == null)
         {
-            return;
+            existingServerIp = askServerIp();
+            if (existingServerIp == null)
+            {
+                return;
+            }
         }
 
-        final String inboundChannel = buildInboundChannel(serverIp);
-        final String outboundChannel = buildOutboundChannel(serverIp);
+        final String inboundChannel = buildInboundChannel(existingServerIp);
+        final String outboundChannel = buildOutboundChannel(existingServerIp);
 
         final IdleStrategy idleStrategy = new SleepingMillisIdleStrategy(1);
         final int bufferLength = 2048 + RingBufferDescriptor.TRAILER_LENGTH;
