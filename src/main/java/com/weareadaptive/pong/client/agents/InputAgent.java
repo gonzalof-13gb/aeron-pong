@@ -1,5 +1,6 @@
-package com.weareadaptive.pong.client;
+package com.weareadaptive.pong.client.agents;
 
+import com.weareadaptive.pong.client.Keyboard;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;

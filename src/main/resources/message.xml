@@ -27,6 +27,7 @@
         <enum name="GameStatus" encodingType="uint16">
             <validValue name="WAITING">0</validValue>
             <validValue name="PLAYING">1</validValue>
+            <validValue name="END">2</validValue>
         </enum>
     </types>
 

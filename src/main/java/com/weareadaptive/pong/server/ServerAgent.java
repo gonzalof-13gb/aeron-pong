@@ -94,9 +94,19 @@ public class ServerAgent implements Agent
                 workCount += subscription.poll(this::readInput, 10);
                 update();
                 sendGameState();
+
+                if (gameStatus == GameStatus.END)
+                {
+                    agentState = AgentState.STOPPED;
+                }
             }
             case STOPPED ->
             {
+                if (publication.isConnected() && subscription.isConnected() && subscription.imageCount() >= 2)
+                {
+                    agentState = AgentState.STEADY;
+                    gameStatus = GameStatus.PLAYING;
+                }
             }
         }
 
@@ -137,6 +147,15 @@ public class ServerAgent implements Agent
         {
             gameState.scores().setInt(0, gameState.scores().getInt(0) + 1);
             gameState.ball().reset();
+        }
+
+        for (final int score : gameState.scores())
+        {
+            if (score >= 12)
+            {
+                gameStatus = GameStatus.END;
+                break;
+            }
         }
     }
 

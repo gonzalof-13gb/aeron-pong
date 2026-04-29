@@ -1,12 +1,15 @@
-package com.weareadaptive.pong.client;
+package com.weareadaptive.pong.client.agents;
 
 import com.weareadaptive.pong.utils.AgentState;
 import io.aeron.Aeron;
 import io.aeron.Publication;
+import io.aeron.driver.MediaDriver;
 import org.agrona.CloseHelper;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.ringbuffer.OneToOneRingBuffer;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.weareadaptive.pong.Globals.*;
 
@@ -19,11 +22,13 @@ public class PublishingAgent implements Agent
 
     private final OneToOneRingBuffer ringBuffer;
     private final String inboundChannel;
+    private final AtomicBoolean gameOver;
 
-    public PublishingAgent(final OneToOneRingBuffer ringBuffer, final String inboundChannel)
+    public PublishingAgent(final OneToOneRingBuffer ringBuffer, final String inboundChannel, final AtomicBoolean gameOver)
     {
         this.ringBuffer = ringBuffer;
         this.inboundChannel = inboundChannel;
+        this.gameOver = gameOver;
     }
 
     @Override
@@ -53,7 +58,11 @@ public class PublishingAgent implements Agent
             }
             case STEADY ->
             {
-                if (publication.isConnected())
+                if (gameOver.get())
+                {
+                    onClose();
+                }
+                else if (publication.isConnected())
                 {
                     workCount += ringBuffer.read(this::readAndOfferMessage);
                 }
@@ -81,7 +90,7 @@ public class PublishingAgent implements Agent
     @Override
     public void onClose()
     {
-        CloseHelper.close(aeron);
+        CloseHelper.closeAll(aeron, publication);
         agentState = AgentState.CLOSED;
     }
 
@@ -93,7 +102,11 @@ public class PublishingAgent implements Agent
 
     private Aeron connectAeron()
     {
-        final Aeron.Context aeronContext = new Aeron.Context().aeronDirectoryName(AERON_DIR_PATH);
-        return Aeron.connect(aeronContext);
+        MediaDriver.Context driverCtx = new MediaDriver.Context().dirDeleteOnStart(true);
+        MediaDriver driver = MediaDriver.launchEmbedded(driverCtx);
+
+        Aeron.Context aeronCtx = new Aeron.Context()
+                .aeronDirectoryName(driver.aeronDirectoryName());
+        return Aeron.connect(aeronCtx);
     }
 }

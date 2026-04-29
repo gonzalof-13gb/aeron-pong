@@ -1,7 +1,7 @@
 package com.weareadaptive.pong.client.visuals;
 
-import com.weareadaptive.pong.client.BallData;
-import com.weareadaptive.pong.client.PlayerData;
+import com.weareadaptive.pong.client.data.BallData;
+import com.weareadaptive.pong.client.data.PlayerData;
 import org.agrona.collections.IntArrayList;
 
 import javax.swing.*;

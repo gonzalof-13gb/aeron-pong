@@ -1,4 +1,4 @@
-package com.weareadaptive.pong.client;
+package com.weareadaptive.pong.client.data;
 
 public class BallData
 {
