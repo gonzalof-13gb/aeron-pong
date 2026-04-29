@@ -64,7 +64,7 @@ public class Ball
 
     private void lateralBouncePlayer1(final Bar player)
     {
-        vel = vel + 20;
+        vel = vel + 50;
         dirX = x - player.x();
         dirY = y - (player.y() + 50);
         convertInUnitaryDirection();
@@ -72,7 +72,7 @@ public class Ball
 
     private void lateralBouncePlayer2(final Bar player)
     {
-        vel = vel + 20;
+        vel = vel + 50;
         dirX = x - (player.x() + 20);
         dirY = y - (player.y() + 50);
         convertInUnitaryDirection();
