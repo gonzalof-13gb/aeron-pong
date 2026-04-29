@@ -10,6 +10,10 @@ public class Globals
 {
     public static int STREAM_ID = 10;
     public static String AERON_DIR_PATH = "/Volumes/DevShm/aeron-training";
+    public static String ARCHIVE_DIR_PATH = "./pong-archive";
+    public static String ARCHIVE_CONTROL_CHANNEL = "aeron:ipc";
+    public static int ARCHIVE_CONTROL_STREAM_ID = 10001;
+    public static int ARCHIVE_CONTROL_RESPONSE_STREAM_ID = 10002;
 
     public static String buildInboundChannel(final String serverIp)
     {

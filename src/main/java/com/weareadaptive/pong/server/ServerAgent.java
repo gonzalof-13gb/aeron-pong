@@ -6,6 +6,8 @@ import com.weareadaptive.pong.utils.AgentState;
 import io.aeron.Aeron;
 import io.aeron.Publication;
 import io.aeron.Subscription;
+import io.aeron.archive.client.AeronArchive;
+import io.aeron.archive.codecs.SourceLocation;
 import io.aeron.logbuffer.Header;
 import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
@@ -20,6 +22,8 @@ import static com.weareadaptive.pong.Globals.*;
 public class ServerAgent implements Agent
 {
     private Aeron aeron;
+    private AeronArchive aeronArchive;
+    private long recordingSubscriptionId = -1;
     private Subscription subscription;
     private Publication publication;
     private final UnsafeBuffer outBuffer = new UnsafeBuffer(ByteBuffer.allocateDirect(2048));
@@ -49,6 +53,12 @@ public class ServerAgent implements Agent
     {
         agentState = AgentState.STARTING;
         aeron = connectAeron();
+        aeronArchive = AeronArchive.connect(new AeronArchive.Context()
+                .aeron(aeron)
+                .controlRequestChannel(ARCHIVE_CONTROL_CHANNEL)
+                .controlRequestStreamId(ARCHIVE_CONTROL_STREAM_ID)
+                .controlResponseChannel(ARCHIVE_CONTROL_CHANNEL)
+                .controlResponseStreamId(ARCHIVE_CONTROL_RESPONSE_STREAM_ID));
         agentState = AgentState.CONNECTING;
     }
 
@@ -70,12 +80,13 @@ public class ServerAgent implements Agent
                     subscription = aeron.addSubscription(inboundChannel, STREAM_ID);
                 }
 
-                System.out.println(subscription.imageCount());
-
                 if (publication.isConnected() && subscription.isConnected() && subscription.imageCount() >= 2)
                 {
                     agentState = AgentState.STEADY;
                     gameStatus = GameStatus.PLAYING;
+                    recordingSubscriptionId = aeronArchive.startRecording(
+                            outboundChannel, STREAM_ID, SourceLocation.LOCAL);
+                    System.out.println("[Archive] Recording started | subscriptionId=" + recordingSubscriptionId);
                 }
             }
             case STEADY ->
@@ -167,6 +178,18 @@ public class ServerAgent implements Agent
     @Override
     public void onClose()
     {
+        if (aeronArchive != null && recordingSubscriptionId >= 0)
+        {
+            try
+            {
+                aeronArchive.stopRecording(recordingSubscriptionId);
+                System.out.println("[Archive] Recording stopped | subscriptionId=" + recordingSubscriptionId);
+            }
+            catch (final Exception ignored)
+            {
+            }
+        }
+        CloseHelper.close(aeronArchive);
         CloseHelper.close(aeron);
         agentState = AgentState.CLOSED;
     }
